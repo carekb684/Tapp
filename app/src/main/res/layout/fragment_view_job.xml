@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:isScrollContainer="false"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/view_job_title_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="122dp"
+                android:text="Placeholder title"
+                android:textSize="30dp"
+                android:textColor="@color/colorBlack"
+                />
+
+            <TextView
+                android:id="@+id/view_job_description_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="Placeholder description"
+                android:textAppearance="@style/AppTheme.CreateJobText" />
+
+
+
+            <TextView
+                android:id="@+id/view_job_est_time_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Est time (hours): "
+                android:textAppearance="@style/AppTheme.CreateJobText" />
+
+
+
+            <TextView
+                android:id="@+id/view_job_salary_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Salary (SEK):"
+                android:textAppearance="@style/AppTheme.CreateJobText" />
+
+
+
+            <TextView
+                android:id="@+id/view_job_date_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date:"
+                android:layout_marginTop="15dp"
+                android:textAppearance="@style/AppTheme.CreateJobText"
+                />
+
+            <TextView
+                android:id="@+id/view_job_date_time_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time:"
+                android:layout_marginTop="15dp"
+                android:textAppearance="@style/AppTheme.CreateJobText"
+                />
+
+            <Button
+                android:id="@+id/contact_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="@string/contact" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+
+</RelativeLayout>

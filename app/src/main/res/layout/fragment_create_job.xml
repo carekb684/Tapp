@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:isScrollContainer="false"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <EditText
+                android:id="@+id/create_job_title_ET"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="122dp"
+                android:ems="14"
+                android:hint="Title"
+                android:inputType="textAutoCorrect" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1dp"
+                android:layout_marginTop="10dp"
+                android:text="Describe your job"
+                android:textAppearance="@style/AppTheme.CreateJobText" />
+
+            <EditText
+                android:id="@+id/create_job_description_ET"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="top|left"
+                android:hint="This job involves..."
+                android:inputType="textMultiLine"
+                android:ems="14"
+                android:lines="8"
+                android:maxLines="10"
+                android:minLines="6"
+                android:scrollbars="vertical" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1dp"
+                android:layout_marginTop="40dp"
+                android:text="Estimated time for job (hours)"
+                android:textAppearance="@style/AppTheme.CreateJobText" />
+
+            <EditText
+                android:id="@+id/create_job_est_time_ET"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ems="6"
+                android:hint="2"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1dp"
+                android:layout_marginTop="15dp"
+                android:text="Salary for the job (SEK)"
+                android:textAppearance="@style/AppTheme.CreateJobText" />
+
+            <EditText
+                android:id="@+id/create_job_salary_ET"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ems="6"
+                android:hint="150"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/select_date_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Select a date"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="1dp"
+                android:textAppearance="@style/AppTheme.CreateJobText"
+                />
+
+            <TextView
+                android:id="@+id/select_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Select a time"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="1dp"
+                android:textAppearance="@style/AppTheme.CreateJobText"
+                />
+
+            <Button
+                android:id="@+id/submit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="@string/submit" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

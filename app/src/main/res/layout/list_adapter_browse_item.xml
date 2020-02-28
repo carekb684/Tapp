@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Klipp mitt gräs"
+        android:gravity="center"
+        android:layout_weight="20"
+        android:textAlignment="center"
+        android:id="@+id/browse_job_title"
+        android:textAppearance="@style/AppTheme.BrowseJobText"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="40"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/browse_job_text1"
+            android:gravity="center"
+            android:text="text2"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="40"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/browse_job_text2"
+            android:gravity="center"
+            android:text="text2"
+            android:textColor="#d4002e"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/browse_job_text3"
+            android:gravity="center"
+            android:text="text3"
+            android:layout_below="@+id/browse_job_text2"
+            android:textAppearance="@style/AppTheme.BrowseJobText"/>
+    </LinearLayout>
+
+
+</LinearLayout>

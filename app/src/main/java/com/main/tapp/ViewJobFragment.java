@@ -12,8 +12,13 @@ import androidx.fragment.app.Fragment;
 
 public class ViewJobFragment extends Fragment {
 
-    final static String DATA_RECEIVE = "data_receive";
+    final static String JOB_RECEIVE = "job_receive";
     private TextView mTitleTV;
+    private TextView mDescriptionTV;
+    private TextView mEstTimeTV;
+    private TextView mSalaryTV;
+    private TextView mSelectDateTV;
+    private TextView mSelectTimeTV;
 
     @Nullable
     @Override
@@ -21,6 +26,11 @@ public class ViewJobFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_view_job, container, false);
 
         mTitleTV = rootView.findViewById(R.id.view_job_title_TV);
+        mDescriptionTV = rootView.findViewById(R.id.view_job_description_TV);
+        mEstTimeTV = rootView.findViewById(R.id.view_job_est_time_TV);
+        mSalaryTV = rootView.findViewById(R.id.view_job_salary_TV);
+        mSelectDateTV = rootView.findViewById(R.id.view_job_date_TV);
+        mSelectTimeTV = rootView.findViewById(R.id.view_job_date_time_TV);
 
 
         return rootView;
@@ -31,7 +41,13 @@ public class ViewJobFragment extends Fragment {
         super.onStart();
         Bundle args = getArguments();
         if (args != null) {
-            mTitleTV.setText(args.getString(DATA_RECEIVE));
+            Job job = (Job)args.getSerializable(JOB_RECEIVE);
+            mTitleTV.setText(job.getTitle());
+            mDescriptionTV.setText(job.getDescription());
+            mEstTimeTV.setText(String.valueOf(job.getEstTime()));
+            mSalaryTV.setText(String.valueOf(job.getSalary()));
+            mSelectDateTV.setText(job.getDate());
+            mSelectTimeTV.setText(job.getDateTime());
         }
     }
 

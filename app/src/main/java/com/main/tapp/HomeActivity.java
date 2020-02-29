@@ -1,7 +1,6 @@
 package com.main.tapp;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -109,13 +108,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void passData(String data) {
+    public void passData(Job job) {
         ViewJobFragment viewJobFragment = new ViewJobFragment();
         Bundle args = new Bundle();
-        args.putString(ViewJobFragment.DATA_RECEIVE, data);
+        args.putSerializable(ViewJobFragment.JOB_RECEIVE, job);
         viewJobFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new ViewJobFragment())
+                .replace(R.id.fragment_container, viewJobFragment)
                 .commit();
     }
 

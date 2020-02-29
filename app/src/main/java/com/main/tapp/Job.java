@@ -1,6 +1,9 @@
 package com.main.tapp;
 
-public class Job {
+import java.io.Serializable;
+
+public class Job implements Serializable {
+    private Integer mId;
     private String mTitle;
     private String mDescription;
     private Double mEstTime;
@@ -97,6 +100,19 @@ public class Job {
 
     public Job createdDate(String createdDate) {
         mCreatedDate = createdDate;
+        return this;
+    }
+
+    public Integer getId() {
+        return mId;
+    }
+
+    public void setId(Integer id) {
+        mId = id;
+    }
+
+    public Job id(Integer id) {
+        mId = id;
         return this;
     }
 }

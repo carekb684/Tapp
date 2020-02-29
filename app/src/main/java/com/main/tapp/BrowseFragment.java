@@ -1,5 +1,7 @@
 package com.main.tapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,9 +29,24 @@ public class BrowseFragment extends Fragment {
     private DataPassListener mCallback;
 
     public interface DataPassListener{
-        public void passData(String data);
+        public void passData(Job job);
     }
 
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+        // This makes sure that the host activity has implemented the callback interface
+        // If not, it throws an exception
+        try
+        {
+            mCallback = (DataPassListener) context;
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(context.toString()+ " must implement DataPassListener");
+        }
+    }
 
     @Nullable
     @Override
@@ -44,7 +61,8 @@ public class BrowseFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mCallback.passData("Text to pass FragmentB");
+                Job job = (Job) mListView.getItemAtPosition(position);
+                mCallback.passData(job);
             }
         });
 
@@ -59,6 +77,7 @@ public class BrowseFragment extends Fragment {
 
         while (data.moveToNext()) {
             Job job = new Job().
+                    id(Integer.valueOf(data.getString(0))).
                     title(data.getString(1)).
                     description(data.getString(2)).
                     estTime(Double.valueOf(data.getString(3))).

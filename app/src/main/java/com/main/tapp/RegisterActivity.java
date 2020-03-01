@@ -3,6 +3,7 @@ package com.main.tapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,11 +15,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    private static final String TAG = "RegisterActivity";
 
     private EditText mName;
     private EditText mEmail;
@@ -26,7 +35,9 @@ public class RegisterActivity extends AppCompatActivity {
     private Button mRegisterBtn;
     private TextView mLoginText;
     private ProgressBar mProgressBar;
+
     private FirebaseAuth mFireAuth;
+    private FirebaseFirestore mFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         initViews();
         mFireAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
 
         if (mFireAuth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
@@ -49,13 +61,28 @@ public class RegisterActivity extends AppCompatActivity {
                 }
                 mProgressBar.setVisibility(View.VISIBLE);
 
-                String email = mEmail.getText().toString();
+                final String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
+                final String name = mName.getText().toString();
                 mFireAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, "User successfully created.", Toast.LENGTH_SHORT);
+                            final String userId = mFireAuth.getCurrentUser().getUid();
+                            DocumentReference documentReference = mFirestore.collection(
+                                    "users").document(userId);
+                            Map<String, Object> user = new HashMap<>();
+                            user.put("fullName" , name);
+                            user.put("email" , email);
+                            documentReference.set(user).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "onFailure: user profile creation failure" +
+                                            " for " + userId);
+                                }
+                            });
+
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                             finish();
                         } else {

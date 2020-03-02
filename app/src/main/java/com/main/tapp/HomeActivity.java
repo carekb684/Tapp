@@ -2,6 +2,9 @@ package com.main.tapp;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -11,9 +14,24 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import javax.annotation.Nullable;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         BrowseFragment.DataPassListener {
+
+    private TextView mUsernameTV;
+    private TextView mEmailTV;
+
+    private FirebaseAuth mFireAuth;
+    private FirebaseFirestore mFirestore;
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -23,13 +41,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
 
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        initViews(navigationView);
+        initUser();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+
 
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawer,
@@ -43,6 +65,35 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new BrowseFragment()).commit();
         }
+    }
+
+    private void initUser() {
+        mFireAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
+
+        FirebaseUser user = mFireAuth.getCurrentUser();
+        if (user != null) {
+            mEmailTV.setText(user.getEmail());
+            DocumentReference ref = mFirestore.collection(
+                    RegisterActivity.USER_COLLECTION).document(user.getUid());
+            ref.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                    mUsernameTV.setText(String.valueOf(documentSnapshot.get(RegisterActivity.USER_FULLNAME)));
+                }
+            });
+        } else {
+            Toast.makeText(HomeActivity.this, "User login error", Toast.LENGTH_SHORT);
+        }
+    }
+
+    private void initViews(NavigationView navView) {
+        //username+email not in this layout's activity but in header
+        View header = navView.getHeaderView(0);
+
+        mUsernameTV = header.findViewById(R.id.nav_header_name);
+        mEmailTV= header.findViewById(R.id.nav_header_email);
+        drawer = findViewById(R.id.drawer_layout);
     }
 
     /** If drawer is open and backPressed - close drawer

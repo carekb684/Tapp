@@ -29,6 +29,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";
 
+    public static final String USER_FULLNAME = "fullName";
+    public static final String USER_EMAIL = "email";
+    public static final String USER_COLLECTION = "users";
+
     private EditText mName;
     private EditText mEmail;
     private EditText mPassword;
@@ -56,14 +60,14 @@ public class RegisterActivity extends AppCompatActivity {
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!verifyInputs(mEmail) && !verifyInputs(mName) && !verifyInputs(mPassword)) {
+                if (!verifyInputs(mEmail) && !verifyName(mName) && !verifyInputs(mPassword)) {
                     return;
                 }
                 mProgressBar.setVisibility(View.VISIBLE);
 
                 final String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
-                final String name = mName.getText().toString();
+                final String fullName = mName.getText().toString();
                 mFireAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -71,10 +75,10 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "User successfully created.", Toast.LENGTH_SHORT);
                             final String userId = mFireAuth.getCurrentUser().getUid();
                             DocumentReference documentReference = mFirestore.collection(
-                                    "users").document(userId);
+                                    USER_COLLECTION).document(userId);
                             Map<String, Object> user = new HashMap<>();
-                            user.put("fullName" , name);
-                            user.put("email" , email);
+                            user.put(USER_FULLNAME, fullName);
+                            user.put(USER_EMAIL , email);
                             documentReference.set(user).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
@@ -102,6 +106,19 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private boolean verifyName(EditText nameET) {
+        if (verifyInputs(nameET)) {
+            String fullName = nameET.getText().toString();
+            if (fullName.split(" ").length < 2) {
+                nameET.setError("Please enter atleast your first and last name.");
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean verifyInputs(EditText input) {

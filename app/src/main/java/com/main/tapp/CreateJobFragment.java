@@ -24,7 +24,10 @@ import java.util.Date;
 
 public class CreateJobFragment extends Fragment {
 
+    private static final String TAG = "CreateJobFragment";
     private DatabaseHelper mDatabaseHelper;
+
+    private FireBaseUserUtil mFireUtil;
 
     private Button mSubmitButton;
     private EditText mTitle;
@@ -46,6 +49,8 @@ public class CreateJobFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_create_job, container, false);
 
         initializeViews(rootView);
+        mFireUtil = new FireBaseUserUtil();
+
         mDatabaseHelper = new DatabaseHelper(getActivity());
 
         mSelectDateTV.setOnClickListener(new View.OnClickListener() {
@@ -97,16 +102,21 @@ public class CreateJobFragment extends Fragment {
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Job job = new Job().
-                        title(mTitle.getText().toString()).
-                        description(mDescription.getText().toString()).
-                        estTime(Double.valueOf(mEstTime.getText().toString())).
-                        salary(Integer.valueOf(mSalary.getText().toString())).
-                        date(mSelectDateTV.getText().toString()).
-                        dateTime(mSelectTimeTV.getText().toString()).
-                        createdDate(mDateFormat.format(new Date()));
-                addJobDb(job);
+                try {
+                    Job job = new Job().
+                            title(mTitle.getText().toString()).
+                            description(mDescription.getText().toString()).
+                            estTime(Double.valueOf(mEstTime.getText().toString())).
+                            salary(Integer.valueOf(mSalary.getText().toString())).
+                            date(mSelectDateTV.getText().toString()).
+                            dateTime(mSelectTimeTV.getText().toString()).
+                            createdByUID(mFireUtil.getUserNameSynch(getActivity())).
+                            createdDate(mDateFormat.format(new Date()));
 
+                    addJobDb(job);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "Could not create job. " + e.getMessage(), Toast.LENGTH_LONG);
+                }
             }
         });
 

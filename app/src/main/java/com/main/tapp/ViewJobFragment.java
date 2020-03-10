@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 
 public class ViewJobFragment extends Fragment {
 
-    final static String JOB_RECEIVE = "job_receive";
+    public final static String JOB_RECEIVE = "job_receive";
     private TextView mTitleTV;
     private TextView mDescriptionTV;
     private TextView mEstTimeTV;

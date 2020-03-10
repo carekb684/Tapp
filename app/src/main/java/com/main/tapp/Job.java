@@ -11,6 +11,7 @@ public class Job implements Serializable {
     private String mDate;
     private String mDateTime;
     private String mCreatedDate;
+    private String mCreatedByUID;
 
     public String getTitle() {
         return mTitle;
@@ -113,6 +114,19 @@ public class Job implements Serializable {
 
     public Job id(Integer id) {
         mId = id;
+        return this;
+    }
+
+    public String getCreatedByUID() {
+        return mCreatedByUID;
+    }
+
+    public void setCreatedByUID(String createdByUID) {
+        mCreatedByUID = createdByUID;
+    }
+
+    public Job createdByUID(String createdByUID) {
+        mCreatedByUID = createdByUID;
         return this;
     }
 }

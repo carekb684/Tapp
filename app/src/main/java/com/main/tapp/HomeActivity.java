@@ -1,6 +1,7 @@
 package com.main.tapp;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -27,14 +28,17 @@ import javax.annotation.Nullable;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         BrowseFragment.DataPassListener {
 
+    private static final String TAG = "HomeActivity";
     private TextView mUsernameTV;
     private TextView mEmailTV;
 
     private FirebaseAuth mFireAuth;
     private FirebaseFirestore mFirestore;
+    private FirebaseUser mCurrentUser;
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle mDrawerToggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +75,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mFireAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
-        FirebaseUser user = mFireAuth.getCurrentUser();
-        if (user != null) {
-            mEmailTV.setText(user.getEmail());
+        mCurrentUser = mFireAuth.getCurrentUser();
+        if (mCurrentUser != null) {
+            mEmailTV.setText(mCurrentUser.getEmail());
             DocumentReference ref = mFirestore.collection(
-                    RegisterActivity.USER_COLLECTION).document(user.getUid());
+                    RegisterActivity.USER_COLLECTION).document(mCurrentUser.getUid());
             ref.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -84,6 +88,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             });
         } else {
             Toast.makeText(HomeActivity.this, "User login error", Toast.LENGTH_SHORT);
+            Log.d(TAG,"initUser: User should be logged in but is not.");
         }
     }
 
@@ -115,24 +120,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch(menuItem.getItemId()) {
-            case R.id.nav_calender:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+            switch(menuItem.getItemId()) {
+                case R.id.nav_calender:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new CalenderFragment()).commit();
                 break;
-
                 case R.id.nav_browse:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new BrowseFragment()).commit();
                 break;
 
                 case R.id.nav_create_job:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new CreateJobFragment()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            new CreateJobFragment()).commit();
                 break;
 
                 case R.id.nav_settings:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SettingsFragment()).commit();
                 break;
         }
@@ -159,7 +163,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void passData(Job job) {
+    public void passViewJob(Job job) {
         ViewJobFragment viewJobFragment = new ViewJobFragment();
         Bundle args = new Bundle();
         args.putSerializable(ViewJobFragment.JOB_RECEIVE, job);

@@ -1,7 +1,6 @@
 package com.main.tapp;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -29,7 +26,7 @@ public class BrowseFragment extends Fragment {
     private DataPassListener mCallback;
 
     public interface DataPassListener{
-        public void passData(Job job);
+        public void passViewJob(Job job);
     }
 
     @Override
@@ -62,7 +59,7 @@ public class BrowseFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Job job = (Job) mListView.getItemAtPosition(position);
-                mCallback.passData(job);
+                mCallback.passViewJob(job);
             }
         });
 
@@ -84,7 +81,8 @@ public class BrowseFragment extends Fragment {
                     salary(data.getInt(4)).
                     date(data.getString(5)).
                     createdDate(data.getString(6)).
-                    dateTime(data.getString(7));
+                    createdByUID(data.getString(7)).
+                    dateTime(data.getString(8));
 
             jobList.add(job);
         }

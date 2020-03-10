@@ -13,7 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
 
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     private static final String TABLE_JOBS = "table_jobs";
     private static final String COL_ID = "ID";
@@ -22,8 +22,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_EST_TIME = "est_time";
     private static final String COL_SALARY = "salary";
     private static final String COL_DATE = "date";
+    private static final String COL_CREATED_DATE = "created_date";
+    private static final String COL_CREATED_BY = "created_by";
     private static final String COL_DATE_TIME = "date_time";
-    private static final String COL_CREATED = "created";
 
 
     public DatabaseHelper(@Nullable Context context) {
@@ -39,7 +40,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_EST_TIME + " TEXT, " +
                 COL_SALARY + " INTEGER, " +
                 COL_DATE + " TEXT, " +
-                COL_CREATED + " TEXT, " +
+                COL_CREATED_DATE + " TEXT, " +
+                COL_CREATED_BY + " TEXT, " +
                 COL_DATE_TIME + " TEXT)";
 
         db.execSQL(createTable);
@@ -60,7 +62,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_SALARY, job.getSalary());
         cv.put(COL_DATE, job.getDate());
         cv.put(COL_DATE_TIME, job.getDateTime());
-        cv.put(COL_CREATED, job.getCreatedDate());
+        cv.put(COL_CREATED_DATE, job.getCreatedDate());
+        cv.put(COL_CREATED_BY, job.getCreatedByUID());
 
         Log.d(TAG, "addJob: Adding " + job + "to " + TABLE_JOBS);
 

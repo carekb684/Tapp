@@ -37,7 +37,7 @@ public class FireBaseUserUtil {
 
 
     /**
-     *  Retrieves the logged in users full name synchronousy
+     *  Retrieves the logged in users full name synchronously
      * @param activity
      * @return
      * @throws FirebaseNoSignedInUserException

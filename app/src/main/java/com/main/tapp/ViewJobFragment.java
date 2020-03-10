@@ -25,6 +25,7 @@ public class ViewJobFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view_job, container, false);
 
+
         mTitleTV = rootView.findViewById(R.id.view_job_title_TV);
         mDescriptionTV = rootView.findViewById(R.id.view_job_description_TV);
         mEstTimeTV = rootView.findViewById(R.id.view_job_est_time_TV);

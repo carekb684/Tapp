@@ -1,5 +1,6 @@
 package com.main.tapp;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -26,7 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import javax.annotation.Nullable;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        BrowseFragment.DataPassListener {
+        BrowseFragment.DataPassListener, androidx.fragment.app.FragmentManager.OnBackStackChangedListener {
 
     private static final String TAG = "HomeActivity";
     private TextView mUsernameTV;
@@ -38,6 +39,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle mDrawerToggle;
+    private boolean mToolBarNavigationListenerIsRegistered = false;
 
 
     @Override
@@ -55,19 +57,51 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawer,
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.nav_open_drawer, R.string.nav_close_drawer);
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
         drawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+        displayHomeUpOrHamburger();
 
         if(savedInstanceState == null) {
             //start with this fragment selected
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new BrowseFragment()).commit();
+        }
+    }
+
+    private void displayHomeUpOrHamburger() {
+        //Enable Up button only  if there are entries in the back stack
+        boolean upBtn = getSupportFragmentManager().getBackStackEntryCount() > 0;
+
+        if (upBtn) {
+            //cant swipe left to open drawer
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            //remove hamburger
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+            //need listener for up btn
+            if(!mToolBarNavigationListenerIsRegistered) {
+                mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Doesn't have to be onBackPressed
+                        //onBackPressed();
+                        getSupportFragmentManager().popBackStackImmediate();
+                    }
+                });
+                mToolBarNavigationListenerIsRegistered = true;
+            }
+
+        } else {
+            //You must regain the power of swipe for the drawer.
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            // Show hamburger
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+            // Remove the/any drawer toggle listener
+            mDrawerToggle.setToolbarNavigationClickListener(null);
+            mToolBarNavigationListenerIsRegistered = false;
         }
     }
 
@@ -106,7 +140,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
         if (!closeDrawer()) {
-            super.onBackPressed();
+            //drawer is closed
+            FragmentManager fm = getFragmentManager();
+            if (fm.getBackStackEntryCount() > 0) {
+                fm.popBackStackImmediate();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -162,6 +202,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mDrawerToggle.syncState();
     }
 
+
+    /**
+     * retrives a callback from BrowseFragment with a job.
+     * Opens the viewJobFragment with this job
+     * @param job
+     */
     @Override
     public void passViewJob(Job job) {
         ViewJobFragment viewJobFragment = new ViewJobFragment();
@@ -169,8 +215,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         args.putSerializable(ViewJobFragment.JOB_RECEIVE, job);
         viewJobFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, viewJobFragment)
+                .replace(R.id.fragment_container, viewJobFragment).addToBackStack(null)
                 .commit();
     }
 
+    @Override
+    public void onBackStackChanged() {
+        displayHomeUpOrHamburger();
+    }
 }

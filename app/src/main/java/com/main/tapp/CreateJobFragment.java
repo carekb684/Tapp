@@ -61,8 +61,8 @@ public class CreateJobFragment extends Fragment {
                 int month = cal.get(Calendar.MONTH);
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog dateDialog = new DatePickerDialog(
-                        getActivity(), R.style.Widget_AppCompat_ActionBar_Solid, mDateSetListener,
+                DatePickerDialog dateDialog = new DatePickerDialog(getActivity(),
+                        R.style.MyDatePickerDialogTheme, mDateSetListener,
                         year, month, day);
                 dateDialog.show();
             }
@@ -91,8 +91,7 @@ public class CreateJobFragment extends Fragment {
                 int hour = cal.get(Calendar.HOUR);
                 int minute = cal.get(Calendar.MINUTE);
 
-                TimePickerDialog timeDialog = new TimePickerDialog(
-                        getActivity(), R.style.Widget_AppCompat_ActionBar_Solid,
+                TimePickerDialog timeDialog = new TimePickerDialog(getActivity(), R.style.MyDatePickerDialogTheme,
                         mTimeSetListener, hour, minute, true);
                 timeDialog.show();
             }

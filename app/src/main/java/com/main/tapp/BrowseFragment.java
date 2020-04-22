@@ -8,19 +8,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class BrowseFragment extends Fragment {
+public class BrowseFragment extends Fragment implements JobListAdapter.OnJobClickListener {
 
     private static final String TAG = "BrowseFragment";
 
-    private ListView mListView;
+    private ArrayList<Job> mJobs;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     private DatabaseHelper mDatabaseHelper;
     private DataPassListener mCallback;
@@ -51,23 +54,20 @@ public class BrowseFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_browse, container, false);
 
         mDatabaseHelper = new DatabaseHelper(getActivity());
-        mListView = rootView.findViewById(R.id.browse_job_list);
 
-        populateList();
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Job job = (Job) mListView.getItemAtPosition(position);
-                mCallback.passViewJob(job);
-            }
-        });
+        mRecyclerView = rootView.findViewById(R.id.browse_job_list);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mJobs = getJobList();
+        JobListAdapter adapter = new JobListAdapter(mJobs, this);
+        mRecyclerView.setAdapter(adapter);
 
         return rootView;
     }
 
-    private void populateList() {
-        Log.d(TAG, "populateList: displaying data in listview.");
+    private ArrayList<Job> getJobList() {
+        Log.d(TAG, "getJobList: displaying data in listview.");
 
         Cursor data = mDatabaseHelper.getJobs();
         ArrayList<Job> jobList = new ArrayList<>();
@@ -86,8 +86,12 @@ public class BrowseFragment extends Fragment {
 
             jobList.add(job);
         }
+        return jobList;
+    }
 
-        JobListAdapter adapter = new JobListAdapter(getActivity(), R.layout.list_adapter_browse_item, jobList);
-        mListView.setAdapter(adapter);
+    @Override
+    public void onJobClick(int position) {
+        Job job = mJobs.get(position);
+        mCallback.passViewJob(job);
     }
 }

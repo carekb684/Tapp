@@ -1,10 +1,12 @@
 package com.main.tapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -63,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!verifyInputs(mEmail) && !verifyName(mName) && !verifyInputs(mPassword)) {
                     return;
                 }
+                hideKeyboard(RegisterActivity.this);
                 mProgressBar.setVisibility(View.VISIBLE);
 
                 final String email = mEmail.getText().toString();
@@ -137,5 +140,16 @@ public class RegisterActivity extends AppCompatActivity {
         mRegisterBtn = findViewById(R.id.register_account_btn);
         mLoginText = findViewById(R.id.register_already_text);
         mProgressBar = findViewById(R.id.register_account_progressBar);
+    }
+
+    private static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

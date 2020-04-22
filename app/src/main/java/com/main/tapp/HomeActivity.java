@@ -86,8 +86,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Doesn't have to be onBackPressed
-                        //onBackPressed();
                         getSupportFragmentManager().popBackStackImmediate();
                     }
                 });
@@ -95,7 +93,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
 
         } else {
-            //You must regain the power of swipe for the drawer.
+            //enable swiping
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             // Show hamburger
             mDrawerToggle.setDrawerIndicatorEnabled(true);
@@ -214,6 +212,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Bundle args = new Bundle();
         args.putSerializable(ViewJobFragment.JOB_RECEIVE, job);
         viewJobFragment.setArguments(args);
+
+
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, viewJobFragment).addToBackStack(null)
                 .commit();

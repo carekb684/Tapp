@@ -1,53 +1,82 @@
 package com.main.tapp;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class JobListAdapter extends ArrayAdapter<Job> {
-    private static final String TAG = "JobListAdapter";
+public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewHolder> {
 
-    private Context mContext;
-    private int mResource;
+    public static class JobViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
-    public JobListAdapter(@NonNull Context context, int resource, ArrayList<Job> objects) {
-        super(context, resource, objects);
-        mContext = context;
-        mResource = resource;
+        private OnJobClickListener mJobClickListener;
+        private TextView mTitle;
+        private TextView mCreatedDate;
+        private TextView mSalary;
+        private TextView mEstTime;
+        private View layoutView;
+
+
+        public JobViewHolder(View v, TextView salary, TextView estTime, TextView createdDate,
+                             TextView title, OnJobClickListener jobClickListener) {
+            super(v);
+            layoutView = v;
+            mSalary = salary;
+            mCreatedDate = createdDate;
+            mTitle = title;
+            mEstTime = estTime;
+            mJobClickListener = jobClickListener;
+
+            layoutView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mJobClickListener.onJobClick(getAdapterPosition());
+        }
     }
 
-    @NonNull
+    public interface OnJobClickListener{
+        void onJobClick(int position);
+    }
+
+    private static final String TAG = "JobListAdapter";
+    private ArrayList<Job> mData;
+    private OnJobClickListener mClickListener;
+
+    public JobListAdapter(ArrayList<Job> objects, OnJobClickListener clickListener) {
+        mData = objects;
+        mClickListener = clickListener;
+    }
+
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public JobListAdapter.JobViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+       View layoutView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_adapter_browse_item, parent, false);
 
-        Job job = new Job().
-                title(getItem(position).getTitle()).
-                createdDate(getItem(position).getCreatedDate()).
-                estTime(getItem(position).getEstTime()).
-                salary(getItem(position).getSalary());
+       TextView title = layoutView.findViewById(R.id.browse_job_title);
+       TextView salary = layoutView.findViewById(R.id.browse_job_salary);
+       TextView estTime = layoutView.findViewById(R.id.browse_job_est_time);
+       TextView createdDate = layoutView.findViewById(R.id.browse_job_created_date);
 
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+       return new JobViewHolder(layoutView, salary, estTime, createdDate, title, mClickListener);
+    }
 
-        convertView = inflater.inflate(mResource, parent, false);
+    @Override
+    public void onBindViewHolder(JobViewHolder holder, int position) {
+        holder.mTitle.setText(mData.get(position).getTitle());
+        holder.mCreatedDate.setText(mData.get(position).getCreatedDate());
+        holder.mSalary.setText(mData.get(position).getSalary() + "kr");
+        holder.mEstTime.setText(mData.get(position).getEstTime() + "h");
+    }
 
-        TextView titleTV = convertView.findViewById(R.id.browse_job_title);
-        TextView createdTV = convertView.findViewById(R.id.browse_job_text1);
-        TextView salary2TV = convertView.findViewById(R.id.browse_job_text2);
-        TextView estTime2TV = convertView.findViewById(R.id.browse_job_text3);
-
-        titleTV.setText(job.getTitle());
-        createdTV.setText(job.getCreatedDate());
-        salary2TV.setText(String.valueOf(job.getSalary()) + "kr");
-        estTime2TV.setText(String.valueOf(job.getEstTime()) + "h");
-
-        return convertView;
+    @Override
+    public int getItemCount() {
+        return mData.size();
     }
 }

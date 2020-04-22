@@ -26,9 +26,9 @@
             android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:id="@+id/browse_job_text1"
+            android:id="@+id/browse_job_created_date"
             android:gravity="center"
-            android:text="text2"/>
+            android:text="10/7"/>
 
 
     </LinearLayout>
@@ -43,19 +43,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:id="@+id/browse_job_text2"
+            android:id="@+id/browse_job_salary"
             android:gravity="center"
-            android:text="text2"
+            android:text="100kr"
             android:textColor="#d4002e"
             />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:id="@+id/browse_job_text3"
+            android:id="@+id/browse_job_est_time"
             android:gravity="center"
-            android:text="text3"
-            android:layout_below="@+id/browse_job_text2"
+            android:text="5h"
+            android:layout_below="@+id/browse_job_salary"
             android:textAppearance="@style/AppTheme.BrowseJobText"/>
     </LinearLayout>
 

@@ -72,7 +72,7 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && resultCode == IMAGE_PICK_CODE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             Uri imageUri = data.getData();
             uploadImageToFireStorage(imageUri);
         }

@@ -25,10 +25,10 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="f8da3b22-4af2-436a-a372-c72a9727b73d">
-        <schema name="main" object-types="index, column, dataset trigger, table, constraint, view" />
+        <schema name="main" object-types="table, view" />
       </connection>
       <connection connection-id="816ee18b-726a-4701-818f-311c06a8c82f">
-        <schema name="main" object-types="index, column, dataset trigger, table, constraint, view" />
+        <schema name="main" object-types="table, view" />
       </connection>
     </loaded-nodes>
   </component>
@@ -37,13 +37,11 @@
       <console name="Connection" type="STANDARD" schema="main" session="Main" />
     </connection>
     <connection id="816ee18b-726a-4701-818f-311c06a8c82f">
-      <console name="Connection 1" type="STANDARD" schema="main" session="Main"><![CDATA[select * from table_jobs;]]></console>
+      <console name="Connection 1" type="STANDARD" schema="main" session="Main">select * from table_jobs;</console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="816ee18b-726a-4701-818f-311c06a8c82f" object-ref="schemas/main/tables/table_jobs" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="f8da3b22-4af2-436a-a372-c72a9727b73d" />

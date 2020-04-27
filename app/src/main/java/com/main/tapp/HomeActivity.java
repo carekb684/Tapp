@@ -1,10 +1,13 @@
 package com.main.tapp;
 
 import android.app.FragmentManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,9 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +29,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import javax.annotation.Nullable;
 
@@ -33,9 +41,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private TextView mUsernameTV;
     private TextView mEmailTV;
 
+    private ImageView mUserImage;
+
     private FirebaseAuth mFireAuth;
     private FirebaseFirestore mFirestore;
     private FirebaseUser mCurrentUser;
+    private StorageReference mStorageRef;
+
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -106,9 +118,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void initUser() {
         mFireAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         mCurrentUser = mFireAuth.getCurrentUser();
         if (mCurrentUser != null) {
+            //init user name/email
             mEmailTV.setText(mCurrentUser.getEmail());
             DocumentReference ref = mFirestore.collection(
                     RegisterActivity.USER_COLLECTION).document(mCurrentUser.getUid());
@@ -118,6 +132,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     mUsernameTV.setText(String.valueOf(documentSnapshot.get(RegisterActivity.USER_FULLNAME)));
                 }
             });
+
+            //init user IMAGE
+            String uid = mCurrentUser.getUid();
+            StorageReference imageRef = mStorageRef.child("images/users/" + uid + "/image.png");
+            //File file = new File(Environment.getExternalStorageDirectory(), "file_name");
+            final long ONE_MEGABYTE = 1024 * 1024;
+            imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Bitmap bImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    RoundedBitmapDrawable roundBImage =
+                            RoundedBitmapDrawableFactory.create(getResources(), bImage);
+                    roundBImage.setCircular(true);
+                    mUserImage.setImageDrawable(roundBImage);
+                }
+            });
+
         } else {
             Toast.makeText(HomeActivity.this, "User login error", Toast.LENGTH_SHORT);
             Log.d(TAG,"initUser: User should be logged in but is not.");
@@ -131,6 +162,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mUsernameTV = header.findViewById(R.id.nav_header_name);
         mEmailTV= header.findViewById(R.id.nav_header_email);
         drawer = findViewById(R.id.drawer_layout);
+        mUserImage = header.findViewById(R.id.profile_image);
     }
 
     /** If drawer is open and backPressed - close drawer

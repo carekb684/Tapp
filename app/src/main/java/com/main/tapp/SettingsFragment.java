@@ -39,6 +39,11 @@ public class SettingsFragment extends Fragment {
     private StorageReference mStorageRef;
     private FirebaseAuth mAuth;
 
+    private DataPassListener mCallback;
+
+    public interface DataPassListener{
+        public void updateUserData();
+    }
 
     @Nullable
     @Override
@@ -86,6 +91,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 toastMsg("Successfully uploaded image");
+                mCallback.updateUserData();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -148,5 +154,21 @@ public class SettingsFragment extends Fragment {
             }
         }
         return true;
+    }
+
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+        // This makes sure that the host activity has implemented the callback interface
+        // If not, it throws an exception
+        try
+        {
+            mCallback = (DataPassListener) context;
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(context.toString()+ " must implement DataPassListener");
+        }
     }
 }

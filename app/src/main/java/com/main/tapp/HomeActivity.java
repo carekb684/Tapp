@@ -35,7 +35,7 @@ import com.google.firebase.storage.StorageReference;
 import javax.annotation.Nullable;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        BrowseFragment.DataPassListener, androidx.fragment.app.FragmentManager.OnBackStackChangedListener {
+        BrowseFragment.DataPassListener, SettingsFragment.DataPassListener, androidx.fragment.app.FragmentManager.OnBackStackChangedListener {
 
     private static final String TAG = "HomeActivity";
     private TextView mUsernameTV;
@@ -81,6 +81,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             //start with this fragment selected
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new BrowseFragment()).commit();
+            getSupportActionBar().setTitle("Browse");
         }
     }
 
@@ -133,26 +134,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
 
-            //init user IMAGE
-            String uid = mCurrentUser.getUid();
-            StorageReference imageRef = mStorageRef.child("images/users/" + uid + "/image.png");
-            //File file = new File(Environment.getExternalStorageDirectory(), "file_name");
-            final long ONE_MEGABYTE = 1024 * 1024;
-            imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    Bitmap bImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    RoundedBitmapDrawable roundBImage =
-                            RoundedBitmapDrawableFactory.create(getResources(), bImage);
-                    roundBImage.setCircular(true);
-                    mUserImage.setImageDrawable(roundBImage);
-                }
-            });
-
+            initUserImage();
         } else {
             Toast.makeText(HomeActivity.this, "User login error", Toast.LENGTH_SHORT);
             Log.d(TAG,"initUser: User should be logged in but is not.");
         }
+    }
+
+    private void initUserImage() {
+        String uid = mCurrentUser.getUid();
+        StorageReference imageRef = mStorageRef.child("images/users/" + uid + "/image.png");
+        //File file = new File(Environment.getExternalStorageDirectory(), "file_name");
+        final long ONE_MEGABYTE = 1024 * 1024;
+        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bTemp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bTemp, 200, 200, false);
+                RoundedBitmapDrawable roundBImage =
+                        RoundedBitmapDrawableFactory.create(getResources(), scaledBitmap);
+                roundBImage.setCircular(true);
+                mUserImage.setImageDrawable(roundBImage);
+            }
+        });
     }
 
     private void initViews(NavigationView navView) {
@@ -194,21 +198,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 case R.id.nav_calender:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new CalenderFragment()).commit();
-                break;
+                    getSupportActionBar().setTitle("Calender");
+                    break;
                 case R.id.nav_browse:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new BrowseFragment()).commit();
-                break;
-
+                    getSupportActionBar().setTitle("Browse");
+                    break;
                 case R.id.nav_create_job:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             new CreateJobFragment()).commit();
+                    getSupportActionBar().setTitle("Create job");
                 break;
-
                 case R.id.nav_settings:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SettingsFragment()).commit();
-                break;
+                    getSupportActionBar().setTitle("Settings");
+                    break;
+                case R.id.nav_messages:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            new MessagesFragment()).commit();
+                    getSupportActionBar().setTitle("My messages");
+                    break;
         }
 
         closeDrawer();
@@ -255,5 +266,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackStackChanged() {
         displayHomeUpOrHamburger();
+    }
+
+    /** Callback from SettingsFragment to update userImage
+     *
+     */
+    @Override
+    public void updateUserData() {
+        initUserImage();
     }
 }

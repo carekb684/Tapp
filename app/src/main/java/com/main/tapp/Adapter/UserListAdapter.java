@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.main.tapp.R;
@@ -74,16 +75,10 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
         holder.mFullName.setText(mData.get(position).getFullname());
         holder.mLastMsgDate.setText(mData.get(position).getLastMsgDate());
 
-        /*
-        mData.get(position).getImage();
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bTemp, 200, 200, false);
-        RoundedBitmapDrawable roundBImage =
-                RoundedBitmapDrawableFactory.create(getResources(), scaledBitmap);
-        roundBImage.setCircular(true);
-
-
-        holder.mImage.setImageBitmap();
-        */
+        RoundedBitmapDrawable image = mData.get(position).getImage();
+        if(image != null) {
+            holder.mImage.setImageDrawable(image);
+        }
     }
 
     @Override

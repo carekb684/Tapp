@@ -1,6 +1,8 @@
 package com.main.tapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,16 +10,31 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.main.tapp.Adapter.UserListAdapter;
+import com.main.tapp.metadata.Chat;
 import com.main.tapp.metadata.User;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
 
 public class MessagesFragment extends Fragment implements UserListAdapter.OnUserClickListener{
 
@@ -29,7 +46,10 @@ public class MessagesFragment extends Fragment implements UserListAdapter.OnUser
 
     private FirebaseAuth mFireAuth;
     private FirebaseUser mCurrentUser;
+    private FirebaseFirestore chatRef;
+    private UserListAdapter mAdapter;
 
+    private int userUpdateCount = 0;
 
 
     @Nullable
@@ -44,42 +64,96 @@ public class MessagesFragment extends Fragment implements UserListAdapter.OnUser
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mUsers = getUsersList();
-        UserListAdapter adapter = new UserListAdapter(mUsers, this);
-        mRecyclerView.setAdapter(adapter);
+
+        getUsersList();
 
         return rootView;
     }
 
-    private ArrayList<User> getUsersList() {
+    private void getUsersList() {
 
-        ArrayList<User> users = new ArrayList<>();
-        User user1 = new User();
-        User user2 = new User();
-        User user3 = new User();
+        mUsers = new ArrayList<>();
 
-        user1.setFullname("Test 1");
-        user2.setFullname("Test 2");
-        user3.setFullname("Test 3");
+        chatRef = FirebaseFirestore.getInstance();
+        chatRef.collection("chats").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
 
-        user1.setLastMsgDate("02/5 12:00");
-        user2.setLastMsgDate("02/5 12:02");
-        user3.setLastMsgDate("02/5 12:03");
+                mUsers.clear();
+                for (Chat chat : documentSnapshot.toObjects(Chat.class)) {
+                    if (chat.getReceiver().equals(mCurrentUser.getUid())) {
+                        mUsers.add(new User().uid(chat.getSender()));
+                    }
+                    if (chat.getSender().equals(mCurrentUser.getUid())) {
+                        mUsers.add(new User().uid(chat.getReceiver()));
+                    }
+                }
 
-        user1.setUid("G0BNfl0wIOeT2uyXgGKbb3lqmcf1");
-        user2.setUid("HmJg67u5jTNzz9gFMZnjNlPDEL62");
-        user3.setUid("TARMHbyxrfUm0bYYwV8AOhY192Z2");
+                //remove duplicates of uid
+                HashSet<Object> seen = new HashSet<>();
+                mUsers.removeIf(u->!seen.add(u.getUid()));
 
-        users.add(user1);
-        users.add(user2);
-        users.add(user3);
-        return users;
+                setRecyclerView();
+                retrieveUserInfo();
+            }
+        });
+
+    }
+
+    private void retrieveUserInfo() {
+        StorageReference ref = FirebaseStorage.getInstance().getReference();
+        CollectionReference userRef = FirebaseFirestore.getInstance().collection(RegisterActivity.USER_COLLECTION);
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        userUpdateCount = 0;
+
+        for (User user: mUsers) {
+            userRef.document(user.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    Map<String, Object> data = documentSnapshot.getData();
+                    user.setFullname(String.valueOf(data.get(RegisterActivity.USER_FULLNAME)));
+                }
+            });
+
+            StorageReference userImageRef = ref.child("images/users/" + user.getUid() + "/image.png");
+            userImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Bitmap bTemp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bTemp, 150, 150, false);
+                    RoundedBitmapDrawable userBImage = RoundedBitmapDrawableFactory.create(getResources(), scaledBitmap);
+                    userBImage.setCircular(true);
+                    user.setImage(userBImage);
+                    userUpdateCount++;
+                    if (mUsers.size() == userUpdateCount) {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    userUpdateCount++;
+                    if (mUsers.size() == userUpdateCount) {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+
+    }
+
+    private void setRecyclerView() {
+        mAdapter = new UserListAdapter(mUsers, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public void onUserClick(int position) {
         User user = mUsers.get(position);
         Intent intent = new Intent(getContext(), ConversationActivity.class);
-
+        intent.putExtra(ViewJobFragment.USER_RECEIVE, user.getUid());
+        intent.putExtra(ViewJobFragment.USERNAME_RECEIVE, user.getFullname());
+        startActivity(intent);
     }
 }

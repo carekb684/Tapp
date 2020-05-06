@@ -1,10 +1,12 @@
 package com.main.tapp.metadata;
 
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+
 public class User {
 
     private String mFullname;
     private String mUid;
-    private String mImage;
+    private RoundedBitmapDrawable mBImage;
     private String mLastMsgDate;
 
     public String getFullname() {
@@ -23,12 +25,12 @@ public class User {
         mUid = uid;
     }
 
-    public String getImage() {
-        return mImage;
+    public RoundedBitmapDrawable getImage() {
+        return mBImage;
     }
 
-    public void setImage(String image) {
-        mImage = image;
+    public void setImage(RoundedBitmapDrawable image) {
+        mBImage = image;
     }
 
     public String getLastMsgDate() {
@@ -37,5 +39,10 @@ public class User {
 
     public void setLastMsgDate(String lastMsgDate) {
         mLastMsgDate = lastMsgDate;
+    }
+
+    public User uid(String uid) {
+        mUid = uid;
+        return this;
     }
 }

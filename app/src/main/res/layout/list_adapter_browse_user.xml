@@ -1,38 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:weightSum="100">
 
-    <ImageView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_weight="35"
-        android:id="@+id/browse_users_image"
-        app:srcCompat="@drawable/ic_account_circle_blue_24dp"
-        />
+        android:layout_weight="35">
 
-        <TextView
-            android:layout_weight="30"
+        <ImageView
+            android:id="@+id/browse_users_image"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:id="@+id/browse_user_name"
-            android:gravity="center"
-            android:text="Carl E"
-            android:textAppearance="@style/AppTheme.BrowseJobText"
-            android:textSize="30dp"/>
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_account_circle_blue_24dp" />
+    </LinearLayout>
 
-        <TextView
-            android:layout_marginTop="15dp"
-            android:layout_weight="40"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:id="@+id/browse_user_last_msg"
-            android:gravity="center"
-            android:text="02/6 15:32"
-            />
+    <TextView
+        android:id="@+id/browse_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_weight="30"
+        android:gravity="center"
+        android:text="Carl E"
+        android:textAppearance="@style/AppTheme.BrowseJobText"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/browse_user_last_msg"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="40"
+        android:gravity="center"
+        android:text="02/6 15:32" />
 
 
 </LinearLayout>

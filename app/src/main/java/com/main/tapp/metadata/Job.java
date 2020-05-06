@@ -1,4 +1,4 @@
-package com.main.tapp;
+package com.main.tapp.metadata;
 
 import java.io.Serializable;
 
@@ -12,6 +12,7 @@ public class Job implements Serializable {
     private String mDateTime;
     private String mCreatedDate;
     private String mCreatedByUID;
+    private String mCreatedByName;
 
     public String getTitle() {
         return mTitle;
@@ -127,6 +128,15 @@ public class Job implements Serializable {
 
     public Job createdByUID(String createdByUID) {
         mCreatedByUID = createdByUID;
+        return this;
+    }
+
+    public String getCreatedByName() {
+        return mCreatedByName;
+    }
+
+    public Job createdByName(String createdByName) {
+        mCreatedByName = createdByName;
         return this;
     }
 }

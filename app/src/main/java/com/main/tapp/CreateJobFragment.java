@@ -17,6 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.main.tapp.metadata.Job;
+import com.main.tapp.util.FireBaseUserUtil;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -109,7 +112,8 @@ public class CreateJobFragment extends Fragment {
                             salary(Integer.valueOf(mSalary.getText().toString())).
                             date(mSelectDateTV.getText().toString()).
                             dateTime(mSelectTimeTV.getText().toString()).
-                            createdByUID(mFireUtil.getUserNameSynch(getActivity())).
+                            createdByUID(mFireUtil.getCurrentUser().getUid()).
+                            createdByName(mFireUtil.getUserNameSynch(getActivity())).
                             createdDate(mDateFormat.format(new Date()));
 
                     addJobDb(job);

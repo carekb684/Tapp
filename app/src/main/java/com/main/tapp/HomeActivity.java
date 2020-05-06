@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.main.tapp.metadata.Job;
 
 import javax.annotation.Nullable;
 
@@ -144,7 +145,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void initUserImage() {
         String uid = mCurrentUser.getUid();
         StorageReference imageRef = mStorageRef.child("images/users/" + uid + "/image.png");
-        //File file = new File(Environment.getExternalStorageDirectory(), "file_name");
         final long ONE_MEGABYTE = 1024 * 1024;
         imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
@@ -255,8 +255,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Bundle args = new Bundle();
         args.putSerializable(ViewJobFragment.JOB_RECEIVE, job);
         viewJobFragment.setArguments(args);
-
-
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, viewJobFragment).addToBackStack(null)

@@ -9,11 +9,13 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.main.tapp.metadata.Job;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
 
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
     private static final String TABLE_JOBS = "table_jobs";
     private static final String COL_ID = "ID";
@@ -24,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_DATE = "date";
     private static final String COL_CREATED_DATE = "created_date";
     private static final String COL_CREATED_BY = "created_by";
+    private static final String COL_CREATED_BY_NAME = "created_by_name";
     private static final String COL_DATE_TIME = "date_time";
 
 
@@ -42,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_DATE + " TEXT, " +
                 COL_CREATED_DATE + " TEXT, " +
                 COL_CREATED_BY + " TEXT, " +
+                COL_CREATED_BY_NAME + " TEXT, " +
                 COL_DATE_TIME + " TEXT)";
 
         db.execSQL(createTable);
@@ -64,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_DATE_TIME, job.getDateTime());
         cv.put(COL_CREATED_DATE, job.getCreatedDate());
         cv.put(COL_CREATED_BY, job.getCreatedByUID());
+        cv.put(COL_CREATED_BY_NAME, job.getCreatedByName());
 
         Log.d(TAG, "addJob: Adding " + job + "to " + TABLE_JOBS);
 

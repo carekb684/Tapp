@@ -17,6 +17,8 @@
 
         <activity android:name=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".ConversationActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".LoginActivity"

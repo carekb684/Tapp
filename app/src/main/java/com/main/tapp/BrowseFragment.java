@@ -7,13 +7,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.main.tapp.Adapter.JobListAdapter;
+import com.main.tapp.metadata.Job;
 
 import java.util.ArrayList;
 
@@ -82,7 +84,8 @@ public class BrowseFragment extends Fragment implements JobListAdapter.OnJobClic
                     date(data.getString(5)).
                     createdDate(data.getString(6)).
                     createdByUID(data.getString(7)).
-                    dateTime(data.getString(8));
+                    createdByName(data.getString(8)).
+                    dateTime(data.getString(9));
 
             jobList.add(job);
         }

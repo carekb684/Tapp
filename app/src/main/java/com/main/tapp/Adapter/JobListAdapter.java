@@ -1,4 +1,4 @@
-package com.main.tapp;
+package com.main.tapp.Adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.main.tapp.metadata.Job;
+import com.main.tapp.R;
 
 import java.util.ArrayList;
 

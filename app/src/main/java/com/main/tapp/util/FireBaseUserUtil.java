@@ -1,25 +1,19 @@
-package com.main.tapp;
+package com.main.tapp.util;
 
 import android.os.AsyncTask;
 
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
+import com.main.tapp.RegisterActivity;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-
-import javax.annotation.Nullable;
 
 public class FireBaseUserUtil {
 
@@ -53,12 +47,16 @@ public class FireBaseUserUtil {
 
             //creates task in background
             AsyncTask<Task<DocumentSnapshot>, Void, DocumentSnapshot> execute =
-                    new RunInBackground(activity).execute(ref.get());
+                    new RunInBackgroundSnapshot(activity).execute(ref.get());
             // .get() waits(blocks) until data is ready
             DocumentSnapshot snap = execute.get();
 
             return String.valueOf(snap.get(RegisterActivity.USER_FULLNAME));
         }
         throw new FirebaseNoSignedInUserException("User not signed in, should be.");
+    }
+
+    public FirebaseUser getCurrentUser() {
+        return mCurrentUser;
     }
 }

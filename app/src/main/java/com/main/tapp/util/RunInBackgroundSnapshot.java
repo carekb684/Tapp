@@ -1,4 +1,4 @@
-package com.main.tapp;
+package com.main.tapp.util;
 
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -10,16 +10,19 @@ import androidx.fragment.app.FragmentActivity;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.main.tapp.R;
 
 import java.util.concurrent.ExecutionException;
 
-public class RunInBackground extends AsyncTask<Task<DocumentSnapshot>, Void, DocumentSnapshot> {
+public class RunInBackgroundSnapshot extends AsyncTask<Task<DocumentSnapshot>, Void, DocumentSnapshot> {
 
     private ProgressBar mBar;
 
-    public RunInBackground(FragmentActivity activity) {
+    public RunInBackgroundSnapshot(FragmentActivity activity) {
         mBar = activity.findViewById(R.id.create_job_progressBar);
     }
+
+    public RunInBackgroundSnapshot() {}
 
     @Override
     protected DocumentSnapshot doInBackground(Task<DocumentSnapshot>... tasks) {
@@ -37,12 +40,16 @@ public class RunInBackground extends AsyncTask<Task<DocumentSnapshot>, Void, Doc
 
     @Override
     protected void onPreExecute() {
-        mBar.setVisibility(View.VISIBLE);
+        if (mBar != null) {
+            mBar.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     protected void onPostExecute(DocumentSnapshot result) {
-        mBar.setVisibility(View.INVISIBLE);
+        if (mBar != null) {
+            mBar.setVisibility(View.INVISIBLE);
+        }
     }
 
 }

@@ -61,35 +61,11 @@ public class BrowseFragment extends Fragment implements JobListAdapter.OnJobClic
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mJobs = getJobList();
+        mJobs = mDatabaseHelper.getJobs();
         JobListAdapter adapter = new JobListAdapter(mJobs, this);
         mRecyclerView.setAdapter(adapter);
 
         return rootView;
-    }
-
-    private ArrayList<Job> getJobList() {
-        Log.d(TAG, "getJobList: displaying data in listview.");
-
-        Cursor data = mDatabaseHelper.getJobs();
-        ArrayList<Job> jobList = new ArrayList<>();
-
-        while (data.moveToNext()) {
-            Job job = new Job().
-                    id(Integer.valueOf(data.getString(0))).
-                    title(data.getString(1)).
-                    description(data.getString(2)).
-                    estTime(Double.valueOf(data.getString(3))).
-                    salary(data.getInt(4)).
-                    date(data.getString(5)).
-                    createdDate(data.getString(6)).
-                    createdByUID(data.getString(7)).
-                    createdByName(data.getString(8)).
-                    dateTime(data.getString(9));
-
-            jobList.add(job);
-        }
-        return jobList;
     }
 
     @Override

@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 
 import com.main.tapp.metadata.Job;
 
+import java.util.ArrayList;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
@@ -79,11 +81,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Cursor getJobs() {
+    public ArrayList<Job> getJobs() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_JOBS;
         Cursor data = db.rawQuery(query, null);
 
-        return data;
+        return getJobList(data);
+    }
+
+    public ArrayList<Job> getJobsBy(String uid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_JOBS + " WHERE " + COL_CREATED_BY + "='" + uid+"'";
+        Cursor data = db.rawQuery(query, null);
+
+
+        return getJobList(data);
+    }
+
+    private ArrayList<Job> getJobList(Cursor data) {
+        ArrayList<Job> jobList = new ArrayList<>();
+
+        while (data.moveToNext()) {
+            Job job = new Job().
+                    id(Integer.valueOf(data.getString(0))).
+                    title(data.getString(1)).
+                    description(data.getString(2)).
+                    estTime(Double.valueOf(data.getString(3))).
+                    salary(data.getInt(4)).
+                    date(data.getString(5)).
+                    createdDate(data.getString(6)).
+                    createdByUID(data.getString(7)).
+                    createdByName(data.getString(8)).
+                    dateTime(data.getString(9));
+
+            jobList.add(job);
+        }
+        return jobList;
     }
 }
